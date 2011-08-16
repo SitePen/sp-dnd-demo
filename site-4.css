@@ -70,6 +70,7 @@ h2 {
 
 #cartPaneNode, #wishlistPaneNode, #cartSection .dijitButton, #wishlistSection .dijitButton {
 	position: absolute;
+	min-height: 25px;
 }
 
 #cartPaneNode {

@@ -1,77 +1,72 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<!-- Copyright (c) 2008 SitePen, Inc. All Rights Reserved -->
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-<title>dojo.dnd :: Demo 0.2</title>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<script type="text/javascript" src="/js/sm-iepng.js" defer="defer" charset="ISO-8859-1"></script>
+	<title>dojo.dnd :: Step 2 (programmatic)</title>
+	<meta charset="utf-8">
+	<style>
+		@import url("http://archive.dojotoolkit.org/nightly/checkout/dojo/resources/dojo.css");
+		@import url("http://archive.dojotoolkit.org/nightly/checkout/dojo/resources/dnd.css");
+		@import url("site-2.css");
+		@import url("dnd.css");
+	</style>
+	<script data-dojo-config="async: 1" src="http://archive.dojotoolkit.org/nightly/checkout/dojo/dojo.js"></script>
 
-<style type="text/css">
-	@import url("http://o.aolcdn.com/dojo/1.1.1/dojo/resources/dojo.css");
-	@import url("http://o.aolcdn.com/dojo/1.1.1/dojo/resources/dnd.css");
-	@import url("site-2.css");
-	@import url("dnd.css");
-</style>
-<script type="text/javascript" src="http://o.aolcdn.com/dojo/1.1.1/dojo/dojo.xd.js"></script>
-<script type="text/javascript">
-	dojo.require("dojo.dnd.Source");
-
-	function init() {
-		var catalog = new dojo.dnd.Source("catalogNode", {accept: ["inStock","outOfStock"]});
-		catalog.insertNodes(false, [
-			{ data: "Wrist watch",        type: ["inStock"] },
-			{ data: "Life jacket",        type: ["inStock"] },
-			{ data: "Toy bulldozer",      type: ["inStock"] },
-			{ data: "Vintage microphone", type: ["outOfStock"] },
-			{ data: "TIE fighter",        type: ["outOfStock"] },
-			{ data: "Apples",             type: ["inStock"] },
-			{ data: "Bananas",            type: ["inStock"] },
-			{ data: "Tomatoes",           type: ["outOfStock"] },
-			{ data: "Bread",              type: ["inStock"] }
-		]);
-		catalog.forInItems(function(item, id, map){
-			dojo.addClass(id, item.type[0]);
+	<script>
+		require([ "dojo/dom-class", "dojo/dnd/Source", "dojo/domReady!" ], function(domClass, Source){
+			var catalog = new Source("catalogNode", { accept: [ "inStock", "outOfStock" ] });
+			catalog.insertNodes(false, [
+				{ data: "Wrist watch",        type: [ "inStock" ] },
+				{ data: "Life jacket",        type: [ "inStock" ] },
+				{ data: "Toy bulldozer",      type: [ "inStock" ] },
+				{ data: "Vintage microphone", type: [ "outOfStock" ] },
+				{ data: "TIE fighter",        type: [ "outOfStock" ] },
+				{ data: "Apples",             type: [ "inStock" ] },
+				{ data: "Bananas",            type: [ "inStock" ] },
+				{ data: "Tomatoes",           type: [ "outOfStock" ] },
+				{ data: "Bread",              type: [ "inStock" ] }
+			]);
+			catalog.forInItems(function(item, id, map){
+				domClass.add(id, item.type[0]);
+			});
+	
+			var cart = new Source("cartNode", { accept: [ "inStock" ] });
+			var wishlist = new Source("wishlistNode", { accept: [ "inStock", "outOfStock" ] });
 		});
-
-		var cart = new dojo.dnd.Source("cartNode", {accept: ["inStock"]});
-		var wishlist = new dojo.dnd.Source("wishlistNode", {accept: ["inStock","outOfStock"]});
-	};
-	dojo.addOnLoad(init);
-</script>
+	</script>
 </head>
 <body id="demo2">
-<h1>dojo.dnd :: Demo 0.2</h1>
-
-<div id="toggle"><a href="2-dnd.markup.html">View the markup-driven version of this demo</a></div>
-
-<div id="store">
-	<div class="catalogContainer">
-		<h2>Catalog</h2>
-		<ul id="catalogNode" class="container"></ul>
+	<h1>dojo.dnd :: Step 2 (programmatic)</h1>
+	
+	<div id="toggle"><a href="2-dnd.markup.html">View the declarative version of this demo</a></div>
+	
+	<div id="store">
+		<div class="catalogContainer">
+			<h2>Catalog</h2>
+			<ul id="catalogNode" class="container"></ul>
+		</div>
+	
+		<div class="cartContainer">
+			<h2>Cart</h2>
+			<ol id="cartNode" class="container"></ol>
+		</div>
+		<div class="wishlistContainer">
+			<h2>Wishlist</h2>
+			<ol id="wishlistNode" class="container"></ol>
+		</div>
+	
+		<p class="instructions"><b>Instructions:</b> Drag products from the Catalog into either the Cart or Wishlist.</p>
+	
+		<p class="details"><b>Notes:</b></p>
+		<ul>
+			<li>This is step 2 in the SitePen blog's <a href="http://www.sitepen.com/blog/?p=358">Intro to Dojo DnD</a>.</li>
+			<li>The Wishlist accepts anything in the store; the Cart only accepts items marked as in stock.</li>
+			<li>Reassignments between lists are possible, as long as the target list will accept the item being reassigned.</li>
+			<li>Standard multiple selection works here. Beware; you can only drop a group if every item can be dropped into the list you're attempting to drop them on!</li>
+			<li>The Wishlist and Cart are both regular ordered lists; feel free to re-order them internally via drag and drop as well.</li>
+			<li>Breakthrough at the lab! It's possible to clone products!</li>
+		</ul>
 	</div>
 
-	<div class="cartContainer">
-		<h2>Cart</h2>
-		<ol id="cartNode" class="container"></ol>
-	</div>
-	<div class="wishlistContainer">
-		<h2>Wishlist</h2>
-		<ol id="wishlistNode" class="container"></ol>
-	</div>
-
-	<p class="instructions"><b>Instructions:</b> Drag products from the Catalog into either the Cart or Wishlist.</p>
-
-	<p class="details"><b>Notes:</b></p>
-	<ul>
-		<li>This is step 2 in the SitePen blog's <a href="http://www.sitepen.com/blog/?p=358">Intro to Dojo DnD</a>.</li>
-		<li>The Wishlist accepts anything in the store; the Cart only accepts items marked as in stock.</li>
-		<li>Reassignments between lists are possible, as long as the target list will accept the item being reassigned.</li>
-		<li>Standard multiple selection works here. Beware; you can only drop a group if every item can be dropped into the list you're attempting to drop them on!</li>
-		<li>The Wishlist and Cart are both regular ordered lists; feel free to re-order them internally via drag and drop as well.</li>
-		<li>Breakthrough at the lab! It's possible to clone products!</li>
-	</ul>
-</div>
-
-<div id="footer"><a id="sitepen" href="http://www.sitepen.com/"><img src="images/sitepen150.png" alt="SitePen, Inc. logo" sm:iepng="true"/></a> &copy; 2008 SitePen, Inc. All Rights Reserved.</div>
+	<div id="footer"><a id="sitepen" href="http://www.sitepen.com/"><img src="images/sitepen150.png" alt="SitePen, Inc. logo"></a> © 2008–2011 SitePen, Inc. All Rights Reserved.</div>
 </body>
 </html>

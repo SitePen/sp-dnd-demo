@@ -1,275 +1,268 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<!-- Copyright (c) 2008 SitePen, Inc. All Rights Reserved -->
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-<title>dojo.dnd :: Demo 0.4</title>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<script type="text/javascript" src="/js/sm-iepng.js" defer="defer" charset="ISO-8859-1"></script>
-
-<style type="text/css">
-	@import url("http://o.aolcdn.com/dojo/1.1.1/dojo/resources/dojo.css");
-	@import url("http://o.aolcdn.com/dojo/1.1.1/dojo/resources/dnd.css");
-	@import url("http://o.aolcdn.com/dojo/1.1.1/dijit/themes/tundra/tundra.css");
-	@import url("site-4.css");
-	@import url("dnd.css");
-</style>
-<script type="text/javascript" src="http://o.aolcdn.com/dojo/1.1.1/dojo/dojo.xd.js"></script>
-<script type="text/javascript" src="site-4.js"></script>
-<script type="text/javascript">
-	dojo.require("dojo.dnd.Source");
-	dojo.require("dijit.TitlePane");
-	dojo.require("dijit.form.Button");
-
-	// function to create a function that toggles a property of the
-	// provided objects based on the state of the button provided
-	function makeToggler(btn, objs, prop){
-		return function(){
-			for (i=0; i<objs.length; i++) {
-				objs[i][prop] = btn.checked;
-			}
-		}
-	}
-
-	// based on dojo.dnd.Source.checkAcceptance()
-	function checkAcceptanceWithoutSelfDrop(source, nodes) {
-		if(this == source){ return false; }
-		for(var i = 0; i < nodes.length; ++i){
-			var type = source.getItem(nodes[i].id).type;
-			// type instanceof Array
-			var flag = false;
-			for(var j = 0; j < type.length; ++j){
-				if(type[j] in this.accept){
-					flag = true;
-					break;
+	<title>dojo.dnd :: Step 4</title>
+	<meta charset="utf-8">
+	<style>
+		@import url("http://archive.dojotoolkit.org/nightly/checkout/dojo/resources/dojo.css");
+		@import url("http://archive.dojotoolkit.org/nightly/checkout/dojo/resources/dnd.css");
+		@import url("http://archive.dojotoolkit.org/nightly/checkout/dijit/themes/tundra/tundra.css");
+		@import url("site-4.css");
+		@import url("dnd.css");
+	</style>
+	<script data-dojo-config="async: 1, paths: { util: location.pathname.replace(/[^/]+$/, '') + '/util' }" src="http://archive.dojotoolkit.org/nightly/checkout/dojo/dojo.js"></script>
+	<script>
+		require([ "dojo/_base/array", "dojo/_base/fx", "dojo/dom", "dojo/dom-style", "dojo/dnd/Source", "dojo/dnd/Manager", "dijit/TitlePane", "dijit/form/Button", "dijit/form/ToggleButton", "./data.js" ], function(arrayUtil, fxUtil, dom, domStyle, Source, Manager, TitlePane, Button, ToggleButton){
+			// function to create a function that toggles a property of the
+			// provided objects based on the state of the button provided
+			function makeToggler(btn, objs, prop){
+				return function(){
+					for (i=0; i<objs.length; i++) {
+						objs[i][prop] = btn.checked;
+					}
 				}
 			}
-			if(!flag){
-				return false;
-			}
-		}
-		return true;
-	}
-
-	function highlightTargets(){
-		var props = {
-				margin: { start: '0', end: '-5', unit: 'px' },
-				borderWidth: { start: '0', end: '5', unit: 'px' }
-		};
-		var m = dojo.dnd.manager();
-		var hasZero = false;
-		dojo.forEach(m.nodes, function(node){
-			// check the selected item(s) to look for a zero quantity
-			// so we know whether we can highlight the cart
-			if(m.source.getItem(node.id).data.quantity == 0){
-				hasZero = true;
-			}
-		});
-		dojo.style("wishlistPaneNode", "borderColor", "#97e68d");
-		dojo.style("cartPaneNode", "borderColor", "#97e68d");
-		dojo.anim("wishlistPaneNode", props, 250);
-		if(!hasZero){
-			dojo.anim("cartPaneNode", props, 250);
-			dojo.byId("cartPaneNode").isHighlighted = true;
-		}
-	}
-
-	function unhighlightTargets(dropTarget){
-		var props = {
-				margin: { start: '-5', end: '0', unit: 'px' },
-				borderWidth: { start: '5', end: '0', unit: 'px' }
-		};
-		cpn = dojo.byId("cartPaneNode");
-		var cartIsHighlighted = cpn.isHighlighted;
-		cpn.isHighlighted = false;
-		if(dropTarget && dropTarget.node && dropTarget.node.id){
-			// dropTarget lets us know which node to highlight yellow
-			switch(dropTarget.node.id){
-				case "wishlistPaneNode":
-					if(cartIsHighlighted){
-						dojo.anim("cartPaneNode", props, 250);
+		
+			// based on dojo.dnd.Source.checkAcceptance()
+			function checkAcceptanceWithoutSelfDrop(source, nodes) {
+				if(this == source){ return false; }
+				for(var i = 0; i < nodes.length; ++i){
+					var type = source.getItem(nodes[i].id).type;
+					// type instanceof Array
+					var flag = false;
+					for(var j = 0; j < type.length; ++j){
+						if(type[j] in this.accept){
+							flag = true;
+							break;
+						}
 					}
-					dojo.style("wishlistPaneNode", "borderColor", "#ffff33");
-					dojo.anim("wishlistPaneNode", props, 500, null, null, 750);
-					break;
-				case "cartPaneNode":
-					dojo.anim("wishlistPaneNode", props, 250);
-					dojo.style("cartPaneNode", "borderColor", "#ffff33");
-					dojo.anim("cartPaneNode", props, 500, null, null, 750);
-					break;
-				default:
-					dojo.anim("wishlistPaneNode", props, 250);
-					if(cartIsHighlighted){
-						dojo.anim("cartPaneNode", props, 250);
+					if(!flag){
+						return false;
 					}
+				}
+				return true;
 			}
-		}else{
-			dojo.anim("wishlistPaneNode", props, 250);
-			if(cartIsHighlighted){
-				dojo.anim("cartPaneNode", props, 250);
+		
+			function highlightTargets(){
+				var props = {
+						margin: { start: '0', end: '-5', unit: 'px' },
+						borderWidth: { start: '0', end: '5', unit: 'px' }
+				};
+				var m = Manager.manager();
+				var hasZero = false;
+				arrayUtil.forEach(m.nodes, function(node){
+					// check the selected item(s) to look for a zero quantity
+					// so we know whether we can highlight the cart
+					if(m.source.getItem(node.id).data.quantity == 0){
+						hasZero = true;
+					}
+				});
+				domStyle.set("wishlistPaneNode", "borderColor", "#97e68d");
+				domStyle.set("cartPaneNode", "borderColor", "#97e68d");
+				fxUtil.anim("wishlistPaneNode", props, 250);
+				if(!hasZero){
+					fxUtil.anim("cartPaneNode", props, 250);
+					dom.byId("cartPaneNode").isHighlighted = true;
+				}
 			}
-		}
-	}
-
-	function init(){
-		var junkCatalog = buildCatalog("junkCatalogNode", junkCatalogData);
-		var foodCatalog = buildCatalog("foodCatalogNode", foodCatalogData);
-
-		var cartPane = new dijit.TitlePane({title: "Shopping Cart", open: false}, "cartPaneNode");
-		var wishlistPane = new dijit.TitlePane({title: "Wishlist", open: false}, "wishlistPaneNode");
-
-		var cart = new dojo.dnd.Target("cartPaneNode", {accept: ["inStock"]});
-		cart.parent = dojo.query("#cartNode tbody")[0];
-		var wishlist = new dojo.dnd.Target("wishlistPaneNode", {accept: ["inStock","outOfStock"]});
-		wishlist.parent = dojo.query("#wishlistNode tbody")[0];
-
-		var resetSelections = function(){
-			cart.selectNone();
-			wishlist.selectNone();
-			junkCatalog.selectNone();
-			foodCatalog.selectNone();
-		};
-
-		// highlight valid drop targets when a drag operation starts;
-		dojo.subscribe("/dnd/start", null, highlightTargets);
-		dojo.subscribe("/dnd/cancel", null, unhighlightTargets);
-
-		dojo.subscribe("/dnd/drop", function(){
-			resetSelections();
-			unhighlightTargets(dojo.dnd.manager().target);
-
-			// reset the manager's drop flag to false, since in our
-			// case DnD operations always start on a container that
-			// will not allow "self drops"
-			dojo.dnd.manager().canDrop(false);
+		
+			function unhighlightTargets(dropTarget){
+				var props = {
+						margin: { start: '-5', end: '0', unit: 'px' },
+						borderWidth: { start: '5', end: '0', unit: 'px' }
+				};
+				cpn = dom.byId("cartPaneNode");
+				var cartIsHighlighted = cpn.isHighlighted;
+				cpn.isHighlighted = false;
+				if(dropTarget && dropTarget.node && dropTarget.node.id){
+					// dropTarget lets us know which node to highlight yellow
+					switch(dropTarget.node.id){
+						case "wishlistPaneNode":
+							if(cartIsHighlighted){
+								fxUtil.anim("cartPaneNode", props, 250);
+							}
+							domStyle.set("wishlistPaneNode", "borderColor", "#ffff33");
+							fxUtil.anim("wishlistPaneNode", props, 500, null, null, 750);
+							break;
+						case "cartPaneNode":
+							fxUtil.anim("wishlistPaneNode", props, 250);
+							domStyle.set("cartPaneNode", "borderColor", "#ffff33");
+							fxUtil.anim("cartPaneNode", props, 500, null, null, 750);
+							break;
+						default:
+							fxUtil.anim("wishlistPaneNode", props, 250);
+							if(cartIsHighlighted){
+								fxUtil.anim("cartPaneNode", props, 250);
+							}
+					}
+				}else{
+					fxUtil.anim("wishlistPaneNode", props, 250);
+					if(cartIsHighlighted){
+						fxUtil.anim("cartPaneNode", props, 250);
+					}
+				}
+			}
+	
+			require([ "util", "dojo/query", "dojo/on", "dojo/domReady!" ], function(util, query, on){
+				var junkCatalog = util.buildCatalog("junkCatalogNode", junkCatalogData);
+				var foodCatalog = util.buildCatalog("foodCatalogNode", foodCatalogData);
+		
+				var cartPane = new TitlePane({title: "Shopping Cart", open: false}, "cartPaneNode");
+				var wishlistPane = new TitlePane({title: "Wishlist", open: false}, "wishlistPaneNode");
+		
+				var cart = new dojo.dnd.Target("cartPaneNode", {accept: ["inStock"]});
+				cart.parent = query("#cartNode tbody")[0];
+				var wishlist = new dojo.dnd.Target("wishlistPaneNode", {accept: ["inStock","outOfStock"]});
+				wishlist.parent = query("#wishlistNode tbody")[0];
+		
+				var resetSelections = function(){
+					cart.selectNone();
+					wishlist.selectNone();
+					junkCatalog.selectNone();
+					foodCatalog.selectNone();
+				};
+		
+				// highlight valid drop targets when a drag operation starts;
+				on("/dnd/start", highlightTargets);
+				on("/dnd/cancel", unhighlightTargets);
+		
+				on("/dnd/drop", function(){
+					resetSelections();
+					unhighlightTargets(Manager.manager().target);
+		
+					// reset the manager's drop flag to false, since in our
+					// case DnD operations always start on a container that
+					// will not allow "self drops"
+					Manager.manager().canDrop(false);
+				});
+		
+				// calculate simple totals in the wishlist and cart titles
+				var setupCartTitle = function(force){
+					if(!force && Manager.manager().target !== this){
+						return;
+					}
+					var title = "Shopping Cart";
+					var cartLength = cart.getAllNodes().length;
+					if(cartLength){
+						var items = cartLength > 1 ? " items" : " item";
+						title += " (" + cartLength + items + ")";
+					}
+					cartPane.set("title", title);
+				};
+				var setupWishlistTitle = function(force){
+					if(!force && Manager.manager().target !== this){
+						return;
+					}
+					var title = "Wishlist";
+					var wishlistLength = wishlist.getAllNodes().length;
+					if(wishlistLength){
+						var items = wishlistLength > 1 ? " items" : " item";
+						title += " (" + wishlistLength + items + ")";
+					}
+					wishlistPane.set("title", title);
+				};
+				on(cart, "onDndDrop", setupCartTitle);
+				on(wishlist, "onDndDrop", setupWishlistTitle);
+		
+				// override the normal checkAcceptance so we don't duplicate
+				// items when we do "self drops"
+				junkCatalog.checkAcceptance = foodCatalog.checkAcceptance = checkAcceptanceWithoutSelfDrop;
+		
+				// clear selection state on the "other" catalog
+				on(junkCatalog, "onMouseDown", function(){ foodCatalog.selectNone(); });
+				on(foodCatalog, "onMouseDown", function(){ junkCatalog.selectNone(); });
+		
+				//
+				// various buttons
+				//
+		
+				// button to clear the cart and reset selections
+				var clearCartButton = new Button({}, "clearCartNode");
+				on(clearCartButton, "onClick", function(e){
+					cart.selectAll();
+					cart.deleteSelectedNodes();
+					resetSelections();
+					setupCartTitle(true);
+				});
+		
+				// button to clear the wishlist and reset selections
+				var clearWishlistButton = new Button({}, "clearWishlistNode");
+				on(clearWishlistButton, "onClick", function(e){
+					wishlist.selectAll();
+					wishlist.deleteSelectedNodes();
+					resetSelections();
+					setupWishlistTitle(true);
+				});
+		
+				var catalogs = [junkCatalog, foodCatalog];
+		
+				// button to toggle DnD on/off
+				var enableDndButton = new ToggleButton({iconClass:"dijitCheckBoxIcon", checked: true}, "enableDndNode");
+				on(enableDndButton, "onClick", makeToggler(enableDndButton, catalogs, "isSource"));
+		
+				// button to switch handles-only mode on/off
+				var enableDndHandlesButton = new ToggleButton({iconClass:"dijitCheckBoxIcon", checked: false}, "enableDndHandlesNode");
+				on(enableDndHandlesButton, "onClick", makeToggler(enableDndHandlesButton, catalogs, "withHandles"));
+			});
 		});
-
-		// calculate simple totals in the wishlist and cart titles
-		var setupCartTitle = function(force){
-			if(!force && dojo.dnd.manager().target !== this){
-				return;
-			}
-			var title = "Shopping Cart";
-			var cartLength = cart.getAllNodes().length;
-			if(cartLength){
-				var items = cartLength > 1 ? " items" : " item";
-				title += " (" + cartLength + items + ")";
-			}
-			cartPane.setTitle(title);
-		};
-		var setupWishlistTitle = function(force){
-			if(!force && dojo.dnd.manager().target !== this){
-				return;
-			}
-			var title = "Wishlist";
-			var wishlistLength = wishlist.getAllNodes().length;
-			if(wishlistLength){
-				var items = wishlistLength > 1 ? " items" : " item";
-				title += " (" + wishlistLength + items + ")";
-			}
-			wishlistPane.setTitle(title);
-		};
-		dojo.connect(cart, "onDndDrop", setupCartTitle);
-		dojo.connect(wishlist, "onDndDrop", setupWishlistTitle);
-
-		// override the normal checkAcceptance so we don't duplicate
-		// items when we do "self drops"
-		junkCatalog.checkAcceptance = foodCatalog.checkAcceptance = checkAcceptanceWithoutSelfDrop;
-
-		// clear selection state on the "other" catalog
-		dojo.connect(junkCatalog, "onMouseDown", function(){ foodCatalog.selectNone(); });
-		dojo.connect(foodCatalog, "onMouseDown", function(){ junkCatalog.selectNone(); });
-
-		//
-		// various buttons
-		//
-
-		// button to clear the cart and reset selections
-		var clearCartButton = new dijit.form.Button({}, "clearCartNode");
-		dojo.connect(clearCartButton, "onClick", function(e){
-			cart.selectAll();
-			cart.deleteSelectedNodes();
-			resetSelections();
-			setupCartTitle(true);
-		});
-
-		// button to clear the wishlist and reset selections
-		var clearWishlistButton = new dijit.form.Button({}, "clearWishlistNode");
-		dojo.connect(clearWishlistButton, "onClick", function(e){
-			wishlist.selectAll();
-			wishlist.deleteSelectedNodes();
-			resetSelections();
-			setupWishlistTitle(true);
-		});
-
-		var catalogs = [junkCatalog, foodCatalog];
-
-		// button to toggle DnD on/off
-		var enableDndButton = new dijit.form.ToggleButton({iconClass:"dijitCheckBoxIcon", checked: true}, "enableDndNode");
-		dojo.connect(enableDndButton, "onClick", makeToggler(enableDndButton, catalogs, "isSource"));
-
-		// button to switch handles-only mode on/off
-		var enableDndHandlesButton = new dijit.form.ToggleButton({iconClass:"dijitCheckBoxIcon", checked: false}, "enableDndHandlesNode");
-		dojo.connect(enableDndHandlesButton, "onClick", makeToggler(enableDndHandlesButton, catalogs, "withHandles"));
-	}
-	dojo.addOnLoad(init);
-</script>
+	</script>
 </head>
 <body id="demo4" class="tundra">
-<h1>dojo.dnd :: Demo 0.4</h1>
-
-<div id="store">
-	<div id="wishListAndCart">
-		<div id="cartSection">
-			<div id="cartPaneNode">
-				<table id="cartNode"><tbody></tbody></table>
+	<h1>dojo.dnd :: Step 4</h1>
+	
+	<div id="store">
+		<div id="wishListAndCart">
+			<div id="cartSection">
+				<div id="cartPaneNode">
+					<table id="cartNode"><tbody></tbody></table>
+				</div>
+				<div id="clearCartNode">Clear</div>
 			</div>
-			<div id="clearCartNode">Clear</div>
-		</div>
-		<div id="wishlistSection">
-			<div id="wishlistPaneNode">
-				<table id="wishlistNode"><tbody></tbody></table>
+			<div id="wishlistSection">
+				<div id="wishlistPaneNode">
+					<table id="wishlistNode"><tbody></tbody></table>
+				</div>
+				<div id="clearWishlistNode">Clear</div>
 			</div>
-			<div id="clearWishlistNode">Clear</div>
 		</div>
+	
+		<div class="catalogContainer">
+			<h2>Products</h2>
+			<table id="junkCatalogNode">
+				<thead>
+					<tr>
+						<th></th>
+						<th>Junk</th>
+						<th>Qty</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+			<table id="foodCatalogNode">
+				<thead>
+					<tr>
+						<th></th>
+						<th>Food</th>
+						<th>Qty</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	
+		<div class="instructions"><b>Instructions:</b> Drag products from the Catalog into either the Cart or Wishlist. Toggle these options to tweak the behavior:
+			<div id="enableDndNode">Enable DnD</div>
+			<div id="enableDndHandlesNode">Drag via handles only</div>
+		</div>
+	
+		<p class="details"><b>Notes:</b></p>
+		<ul>
+			<li>This is step 4 in the SitePen blog's <a href="http://www.sitepen.com/blog/?p=358">Intro to Dojo DnD</a>.</li>
+			<li>This version of the demo hooks up a few event handlers to track DnD actions.</li>
+			<li>The Junk Outlet and Dietarium are two separate DnD sources, so you can't drag items from both lists simultaneously.</li>
+		</ul>
 	</div>
 
-	<div class="catalogContainer">
-		<h2>Products</h2>
-		<table id="junkCatalogNode">
-			<thead>
-				<tr>
-					<th></th>
-					<th>Junk</th>
-					<th>Qty</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
-		<table id="foodCatalogNode">
-			<thead>
-				<tr>
-					<th></th>
-					<th>Food</th>
-					<th>Qty</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
-	</div>
-
-	<div class="instructions"><b>Instructions:</b> Drag products from the Catalog into either the Cart or Wishlist. Toggle these options to tweak the behavior:
-		<div id="enableDndNode">Enable DnD</div>
-		<div id="enableDndHandlesNode">Drag via handles only</div>
-	</div>
-
-	<p class="details"><b>Notes:</b></p>
-	<ul>
-		<li>This is step 4 in the SitePen blog's <a href="http://www.sitepen.com/blog/?p=358">Intro to Dojo DnD</a>.</li>
-		<li>This version of the demo hooks up a few event handlers to track DnD actions.</li>
-		<li>The Junk Outlet and Dietarium are two separate DnD sources, so you can't drag items from both lists simultaneously.</li>
-	</ul>
-</div>
-
-<div id="footer"><a id="sitepen" href="http://www.sitepen.com/"><img src="images/sitepen150.png" alt="SitePen, Inc. logo" sm:iepng="true"/></a> &copy; 2008 SitePen, Inc. All Rights Reserved.</div>
+	<div id="footer"><a id="sitepen" href="http://www.sitepen.com/"><img src="images/sitepen150.png" alt="SitePen, Inc. logo"></a> © 2008–2011 SitePen, Inc. All Rights Reserved.</div>
 </body>
 </html>

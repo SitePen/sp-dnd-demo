@@ -57,6 +57,7 @@ h2 {
 
 #cartPaneNode, #wishlistPaneNode {
 	position: absolute;
+	min-height: 25px;
 }
 
 #cartPaneNode {

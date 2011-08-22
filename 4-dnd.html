@@ -10,9 +10,9 @@
 		@import url("site-4.css");
 		@import url("dnd.css");
 	</style>
-	<script data-dojo-config="async: 1, paths: { util: location.pathname.replace(/[^/]+$/, '') + '/util' }" src="http://archive.dojotoolkit.org/nightly/checkout/dojo/dojo.js"></script>
+	<script data-dojo-config="async: 1, packages: [ { name: 'dnd', location: location.pathname.replace(/\/[^/]+$/, '') } ]" src="http://archive.dojotoolkit.org/nightly/dojotoolkit/dojo/dojo.js"></script>
 	<script>
-		require([ "dojo/_base/array", "dojo/_base/fx", "dojo/dom", "dojo/dom-style", "dojo/dnd/Source", "dojo/dnd/Manager", "dijit/TitlePane", "dijit/form/Button", "dijit/form/ToggleButton", "./data.js" ], function(arrayUtil, fxUtil, dom, domStyle, Source, Manager, TitlePane, Button, ToggleButton){
+		require([ "dojo/_base/array", "dojo/_base/fx", "dojo/dom", "dojo/dom-style", "dojo/dnd/Source", "dojo/dnd/Target", "dojo/dnd/Manager", "dijit/TitlePane", "dijit/form/Button", "dijit/form/ToggleButton" ], function(arrayUtil, fxUtil, dom, domStyle, Source, Target, Manager, TitlePane, Button, ToggleButton){
 			// function to create a function that toggles a property of the
 			// provided objects based on the state of the button provided
 			function makeToggler(btn, objs, prop){
@@ -103,16 +103,16 @@
 				}
 			}
 	
-			require([ "util", "dojo/query", "dojo/on", "dojo/domReady!" ], function(util, query, on){
-				var junkCatalog = util.buildCatalog("junkCatalogNode", junkCatalogData);
-				var foodCatalog = util.buildCatalog("foodCatalogNode", foodCatalogData);
+			require([ "dnd/util", "dojo/query", "dojo/on", "dnd/data", "dojo/domReady!" ], function(util, query, on, data){
+				var junkCatalog = util.buildCatalog("junkCatalogNode", data.junkCatalogData);
+				var foodCatalog = util.buildCatalog("foodCatalogNode", data.foodCatalogData);
 		
-				var cartPane = new TitlePane({title: "Shopping Cart", open: false}, "cartPaneNode");
-				var wishlistPane = new TitlePane({title: "Wishlist", open: false}, "wishlistPaneNode");
+				var cartPane = new TitlePane({title: "Shopping Cart", open: false }, "cartPaneNode");
+				var wishlistPane = new TitlePane({title: "Wishlist", open: false }, "wishlistPaneNode");
 		
-				var cart = new dojo.dnd.Target("cartPaneNode", {accept: ["inStock"]});
+				var cart = new Target("cartPaneNode", {accept: ["inStock"]});
 				cart.parent = query("#cartNode tbody")[0];
-				var wishlist = new dojo.dnd.Target("wishlistPaneNode", {accept: ["inStock","outOfStock"]});
+				var wishlist = new Target("wishlistPaneNode", {accept: ["inStock","outOfStock"]});
 				wishlist.parent = query("#wishlistNode tbody")[0];
 		
 				var resetSelections = function(){
@@ -250,9 +250,9 @@
 			</table>
 		</div>
 	
-		<div class="instructions"><b>Instructions:</b> Drag products from the Catalog into either the Cart or Wishlist. Toggle these options to tweak the behavior:
-			<div id="enableDndNode">Enable DnD</div>
-			<div id="enableDndHandlesNode">Drag via handles only</div>
+		<div class="instructions"><b>Instructions:</b> Drag products from the Catalog into either the Cart or Wishlist. Toggle these options to tweak the behavior:<br>
+			<span id="enableDndNode">Enable DnD</span>
+			<span id="enableDndHandlesNode">Drag via handles only</span>
 		</div>
 	
 		<p class="details"><b>Notes:</b></p>

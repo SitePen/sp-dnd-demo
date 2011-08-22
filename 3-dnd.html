@@ -10,32 +10,21 @@
 		@import url("site-3.css");
 		@import url("dnd.css");
 	</style>
-	<script data-dojo-config="async: 1, paths: { util: location.pathname.replace(/[^/]+$/, '') + '/util' }" src="http://archive.dojotoolkit.org/nightly/checkout/dojo/dojo.js"></script>
+	<script data-dojo-config="async: 1, packages: [ { name: 'dnd', location: location.pathname.replace(/\/[^/]+$/, '') } ]" src="http://archive.dojotoolkit.org/nightly/dojotoolkit/dojo/dojo.js"></script>
 	
 	<script>
-		require([ "dojo/_base/kernel", "dojo/query", "dijit/TitlePane", "util", "dojo/domReady!" ], function(dojo, query, TitlePane, util){
-			var junkCatalog = util.buildCatalog("junkCatalogNode", [
-				{ name: "Wrist watch", image: "watch.jpg", description: "Tell time with Swiss precision", quantity: 3 },
-				{ name: "Life jacket", image: "life-jacket.jpg", description: "Stay afloat during your frequent shipwrecks", quantity: 1 },
-				{ name: "Toy bulldozer", image: "bulldozer.jpg", description: "Move the earth, one cup at a time", quantity: 8 },
-				{ name: "Vintage microphone", image: "microphone.jpg", description: "Make 'em swoon in your blue suede shoes", quantity: 0 },
-				{ name: "TIE fighter", image: "tie-fighter.jpg", description: "Rid your neighborhood of pesky Rebel Scum", quantity: 0 }
-			]);
+		require([ "dojo/_base/kernel", "dojo/query", "dojo/dnd/Target", "dijit/TitlePane", "dnd/util", "dnd/data", "dojo/domReady!" ], function(dojo, query, Target, TitlePane, util, data){
+			var junkCatalog = util.buildCatalog("junkCatalogNode", data.junkCatalogData),
+				foodCatalog = util.buildCatalog("foodCatalogNode", data.foodCatalogData);
 	
-			var foodCatalog = util.buildCatalog("foodCatalogNode", [
-				{ name: "Apples", image: "apple.jpg", description: "Keep the doctor away on a daily basis", quantity: 10 },
-				{ name: "Bananas", image: "bananas.jpg", description: "Bananas are an excellent source of potassium", quantity: 18 },
-				{ name: "Tomatoes", image: "tomatoes.jpg", description: "Imported fresh daily from Dylan's front porch", quantity: 0 },
-				{ name: "Bread", image: "bread.jpg", description: "Guaranteed to be either stale or fresh", quantity: 7 }
-			]);
-	
-			var cartPane = new TitlePane({title: "Shopping Cart", open: false}, "cartPaneNode"),
-				wishlistPane = new TitlePane({title: "Wishlist", open: false}, "wishlistPaneNode");
-	
-			var cart = new dojo.dnd.Target("cartPaneNode", {accept: ["inStock"]});
-			cart.parent = query("#cartNode tbody")[0];
-			var wishlist = new dojo.dnd.Target("wishlistPaneNode", {accept: ["inStock","outOfStock"]});
-			wishlist.parent = query("#wishlistNode tbody")[0];
+			var cartPane = new TitlePane({ title: "Shopping Cart", open: false }, "cartPaneNode"),
+				wishlistPane = new TitlePane({ title: "Wishlist", open: false }, "wishlistPaneNode");
+			
+			var cart = new Target("cartPaneNode", { accept: [ "inStock" ] });
+			cart.parent = dojo.byId("cartNode");
+			
+			var wishlist = new Target("wishlistPaneNode", { accept: [ "inStock", "outOfStock" ] });
+			wishlist.parent = dojo.byId("wishlistNode");
 		});
 	</script>
 </head>
@@ -45,10 +34,10 @@
 	<div id="store">
 		<div id="wishListAndCart">
 			<div id="cartPaneNode">
-				<table id="cartNode"><tbody></tbody></table>
+				<table id="cartNode"></table>
 			</div>
 			<div id="wishlistPaneNode">
-				<table id="wishlistNode"><tbody></tbody></table>
+				<table id="wishlistNode"></table>
 			</div>
 		</div>
 	
@@ -62,7 +51,6 @@
 						<th>Qty</th>
 					</tr>
 				</thead>
-				<tbody></tbody>
 			</table>
 			<table id="foodCatalogNode">
 				<thead>
@@ -72,7 +60,6 @@
 						<th>Qty</th>
 					</tr>
 				</thead>
-				<tbody></tbody>
 			</table>
 		</div>
 	

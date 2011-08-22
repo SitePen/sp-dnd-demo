@@ -35,11 +35,11 @@
 	background-color: #ededed;
 }
 
-.dojoDndItemBefore {
+.dojoDndItemBefore, .dojoDndItemBefore > td {
 	border-top: 2px solid #369;
 }
 
-.dojoDndItemAfter {
+.dojoDndItemAfter, .dojoDndItemAfter > td {
 	border-bottom: 2px solid #369;
 }
 

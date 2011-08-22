@@ -7,7 +7,7 @@ define({
 		{ name: "Vintage microphone", image: "microphone.jpg", description: "Make 'em swoon in your blue suede shoes", quantity: 0 },
 		{ name: "TIE fighter", image: "tie-fighter.jpg", description: "Rid your neighborhood of pesky Rebel Scum", quantity: 0 }
 	],
-	
+
 	foodCatalogData: [
 		{ name: "Apples", image: "apple.jpg", description: "Keep the doctor away on a daily basis", quantity: 10 },
 		{ name: "Bananas", image: "bananas.jpg", description: "Bananas are an excellent source of potassium", quantity: 18 },

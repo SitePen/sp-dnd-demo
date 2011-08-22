@@ -4,14 +4,14 @@
 
 /*
 
-	there are basically all the classes you can set 
+	there are basically all the classes you can set
 	for the various dojo.dnd states and elements in
-	their simplest form. hacking welcome. 
+	their simplest form. hacking welcome.
 
 */
 
-.dojoDndItem { 
-	padding:3px; 
+.dojoDndItem {
+	padding:3px;
 }
 
 .dojoDndItemOver {
@@ -46,7 +46,7 @@
 .dojoDndAvatar {
 	border:2px solid #ccc;
 }
-	
+
 .dojoDndAvatarHeader {
 	background-color: #aaa;
 }

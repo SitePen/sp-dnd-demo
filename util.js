@@ -7,7 +7,7 @@ define([ "dojo/string", "dojo/dom-construct", "dojo/dom-class", "dojo/dnd/Source
 			quantity: item.quantity || 0,
 			description: item.description ? "<br><span>" + item.description + "</span>" : ""
 		})),
-		
+
 		type = item.quantity ? [ "inStock" ] : [ "outOfStock" ];
 
 		return { node: node, data: item, type: type };
@@ -20,10 +20,10 @@ define([ "dojo/string", "dojo/dom-construct", "dojo/dom-class", "dojo/dnd/Source
 		dndObj.forInItems(function(item, id, map){
 			domClass.add(id, item.type[0]);
 		});
-		
+
 		return dndObj;
 	}
-	
+
 	return {
 		catalogNodeCreator: catalogNodeCreator,
 		buildCatalog: buildCatalog

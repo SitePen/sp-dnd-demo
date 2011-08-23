@@ -13,18 +13,26 @@
 	<script data-dojo-config="async: 1, packages: [ { name: 'dnd', location: location.pathname.replace(/\/[^/]+$/, '') } ]" src="http://archive.dojotoolkit.org/nightly/dojotoolkit/dojo/dojo.js"></script>
 
 	<script>
-		require([ "dojo/_base/kernel", "dojo/query", "dojo/dnd/Target", "dijit/TitlePane", "dnd/util", "dnd/data", "dojo/domReady!" ], function(dojo, query, Target, TitlePane, util, data){
+		require([ "dojo/_base/kernel", "dojo/dom", "dojo/query", "dojo/dnd/Target", "dijit/TitlePane", "dnd/util", "dnd/data", "dojo/domReady!" ], function(dojo, dom, query, Target, TitlePane, util, data){
+			// creates dnd Sources for the junk and food catalogs
 			var junkCatalog = util.buildCatalog("junkCatalogNode", data.junkCatalogData),
 				foodCatalog = util.buildCatalog("foodCatalogNode", data.foodCatalogData);
 
+			// creates TitlePanes for the shopping cart and wishlist
 			var cartPane = new TitlePane({ title: "Shopping Cart", open: false }, "cartPaneNode"),
 				wishlistPane = new TitlePane({ title: "Wishlist", open: false }, "wishlistPaneNode");
 
+			// turns the cart TitlePane into a dnd Target
 			var cart = new Target("cartPaneNode", { accept: [ "inStock" ] });
-			cart.parent = dojo.byId("cartNode");
 
+			// sets the container for items dropped on the cart TitlePane to the cartNode element
+			cart.parent = dom.byId("cartNode");
+
+			// turns the wishlist TitlePane into a dnd Target
 			var wishlist = new Target("wishlistPaneNode", { accept: [ "inStock", "outOfStock" ] });
-			wishlist.parent = dojo.byId("wishlistNode");
+
+			// sets the container for items dropped on the wishlist TitlePane to the wishlistNode element
+			wishlist.parent = dom.byId("wishlistNode");
 		});
 	</script>
 </head>

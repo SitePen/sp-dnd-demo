@@ -169,3 +169,30 @@ h2 {
 	padding-top: 1em;
 	clear: both;
 }
+
+.dojoDndTarget {
+	outline: 0 solid #7fff00;
+	-webkit-transition-property: outline-width, outline-color;
+	-webkit-transition-duration: 0.2s, 0.2s;
+	-moz-transition-property: outline-width, outline-color;
+	-moz-transition-duration: 0.2s, 0.2s;
+	-ms-transition-property: outline-width, outline-color;
+	-ms-transition-duration: 0.2s, 0.2s;
+	-o-transition-property: outline-width, outline-color;
+	-o-transition-duration: 0.2s, 0.2s;
+	transition-property: outline-width, outline-color;
+	transition-duration: 0.2s, 0.2s;
+}
+
+.highlight, .glow {
+	outline: 5px solid #7fff00;
+	-webkit-transition: outline-width 0.2s;
+	-moz-transition: outline-width 0.2s;
+	-ms-transition: outline-width 0.2s;
+	-o-transition: outline-width 0.2s;
+	transition: outline-width 0.2s;
+}
+
+.glow {
+	outline-color: #ff5;
+}

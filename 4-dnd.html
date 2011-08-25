@@ -39,15 +39,15 @@
 				setListCount.call(this);
 			}
 
-			require([ "dnd/util", "dojo/on", "dnd/data", "dojo/domReady!" ], function(util, on, data){
+			require([ "dnd/util", "dojo/aspect", "dojo/on", "dnd/data", "dojo/domReady!" ], function(util, aspect, on, data){
 				// create dnd Sources for the junk and food catalogs
 				var junkCatalog = util.buildCatalog("junkCatalogNode", data.junkCatalogData, false),
 					foodCatalog = util.buildCatalog("foodCatalogNode", data.foodCatalogData, false);
 
 				// make the two product lists look more like a single list by ensuring that the highlight
 				// is removed from the other source when a user highlights an item
-				on(junkCatalog, "MouseDown", function(){ foodCatalog.selectNone(); });
-				on(foodCatalog, "MouseDown", function(){ junkCatalog.selectNone(); });
+				aspect.after(junkCatalog, "onMouseDown", function(){ foodCatalog.selectNone(); });
+				aspect.after(foodCatalog, "onMouseDown", function(){ junkCatalog.selectNone(); });
 
 				// create TitlePanes for the shopping cart and wishlist
 				var cartPane = new TitlePane({ title: "Shopping Cart (<span class='count'>0</span>)", open: false }, "cartPaneNode"),
@@ -60,7 +60,7 @@
 				});
 
 				// update the cart’s displayed item count when dropped on
-				on(cart, "Drop", setListCount);
+				aspect.after(cart, "onDrop", setListCount);
 
 				// turn the wishlist TitlePane into a dnd Target
 				var wishlist = new Target("wishlistPaneNode", {
@@ -69,7 +69,7 @@
 				});
 
 				// update the wishlist’s displayed item count when dropped on
-				on(wishlist, "Drop", setListCount);
+				aspect.after(wishlist, "onDrop", setListCount);
 
 				// highlight valid drop targets when a drag operation is started (/dnd/start)
 				on("/dnd/start", lang.partial(highlightTargets, true));

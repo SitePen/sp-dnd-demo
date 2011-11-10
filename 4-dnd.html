@@ -10,9 +10,11 @@
 		@import url("site-4.css");
 		@import url("dnd.css");
 	</style>
+	<!-- In the packages configuration below, we are setting the location of the dnd package to the directory in
+	     which this html file exists. -->
 	<script data-dojo-config="async: 1, packages: [ { name: 'dnd', location: location.pathname.replace(/\/[^/]+$/, '') } ]" src="http://downloads.dojotoolkit.org/release-1.7.0/dojo-release-1.7.0/dojo/dojo.js"></script>
 	<script>
-		require([ "dojo/_base/lang", "dojo/_base/array", "dojo/query", "dojo/dom", "dojo/dom-class", "dojo/dnd/Source", "dojo/dnd/Target", "dijit", "dijit/TitlePane", "dijit/form/Button", "dijit/form/ToggleButton" ], function(lang, arrayUtil, query, dom, domClass, Source, Target, dijit, TitlePane, Button, ToggleButton){
+		require([ "dojo/_base/lang", "dojo/_base/array", "dojo/query", "dojo/dom", "dojo/dom-class", "dojo/dnd/Source", "dojo/dnd/Target", "dijit", "dijit/TitlePane", "dijit/form/Button", "dijit/form/ToggleButton", "dnd/util", "dojo/aspect", "dojo/on", "dojo/topic", "dnd/data", "dojo/domReady!" ], function(lang, arrayUtil, query, dom, domClass, Source, Target, dijit, TitlePane, Button, ToggleButton, util, aspect, on, topic, data){
 			// highlights available drop targets
 			function highlightTargets(show, source, nodes){
 				domClass.toggle("wishlistPaneNode", "highlight", show);
@@ -39,79 +41,77 @@
 				setListCount.call(this);
 			}
 
-			require([ "dnd/util", "dojo/aspect", "dojo/on", "dojo/topic", "dnd/data", "dojo/domReady!" ], function(util, aspect, on, topic, data){
-				// create dnd Sources for the junk and food catalogs
-				var junkCatalog = util.buildCatalog("junkCatalogNode", data.junkCatalogData, false),
-					foodCatalog = util.buildCatalog("foodCatalogNode", data.foodCatalogData, false);
+			// create dnd Sources for the junk and food catalogs
+			var junkCatalog = util.buildCatalog("junkCatalogNode", data.junkCatalogData, false),
+				foodCatalog = util.buildCatalog("foodCatalogNode", data.foodCatalogData, false);
 
-				// make the two product lists look more like a single list by ensuring that the highlight
-				// is removed from the other source when a user highlights an item
-				aspect.after(junkCatalog, "onMouseDown", function(){ foodCatalog.selectNone(); });
-				aspect.after(foodCatalog, "onMouseDown", function(){ junkCatalog.selectNone(); });
+			// make the two product lists look more like a single list by ensuring that the highlight
+			// is removed from the other source when a user highlights an item
+			aspect.after(junkCatalog, "onMouseDown", function(){ foodCatalog.selectNone(); });
+			aspect.after(foodCatalog, "onMouseDown", function(){ junkCatalog.selectNone(); });
 
-				// create TitlePanes for the shopping cart and wishlist
-				var cartPane = new TitlePane({ title: "Shopping Cart (<span class='count'>0</span>)", open: false }, "cartPaneNode"),
-					wishlistPane = new TitlePane({ title: "Wishlist (<span class='count'>0</span>)", open: false }, "wishlistPaneNode");
+			// create TitlePanes for the shopping cart and wishlist
+			var cartPane = new TitlePane({ title: "Shopping Cart (<span class='count'>0</span>)", open: false }, "cartPaneNode"),
+				wishlistPane = new TitlePane({ title: "Wishlist (<span class='count'>0</span>)", open: false }, "wishlistPaneNode");
 
-				// turn the cart TitlePane into a dnd Target
-				var cart = new Target("cartPaneNode", {
-					accept: [ "inStock" ],
-					parent: dom.byId("cartNode")
-				});
-
-				// update the cart’s displayed item count when dropped on
-				aspect.after(cart, "onDrop", setListCount);
-
-				// turn the wishlist TitlePane into a dnd Target
-				var wishlist = new Target("wishlistPaneNode", {
-					accept: [ "inStock", "outOfStock" ],
-					parent: dom.byId("wishlistNode")
-				});
-
-				// update the wishlist’s displayed item count when dropped on
-				aspect.after(wishlist, "onDrop", setListCount);
-
-				// highlight valid drop targets when a drag operation is started (/dnd/start)
-				topic.subscribe("/dnd/start", lang.partial(highlightTargets, true));
-
-				// remove the highlight when a drag operation is finished (/dnd/cancel or /dnd/drop)
-				topic.subscribe("/dnd/cancel, /dnd/drop", lang.partial(highlightTargets, false));
-
-				// give the target of a drop an extended glow
-				topic.subscribe("/dnd/drop", glowTarget);
-
-				// create a button to clear the cart
-				new Button({
-					onClick: dojo.hitch(cart, clearList)
-				}, "clearCartNode");
-
-				// create a button to clear the wishlist
-				new Button({
-					onClick: dojo.hitch(wishlist, clearList)
-				}, "clearWishlistNode");
-
-				// create a function that lets us change properties of the catalog lists;
-				// for demonstration purposes only
-				function makeToggler(prop){
-					return function(){
-						junkCatalog[prop] = foodCatalog[prop] = this.checked;
-					};
-				}
-
-				// create a demo button to toggle DnD on/off
-				new ToggleButton({
-					iconClass: "dijitCheckBoxIcon",
-					checked: true,
-					onClick: makeToggler("isSource")
-				}, "enableDndNode");
-
-				// create a demo button to toggle handles on/off
-				new ToggleButton({
-					iconClass: "dijitCheckBoxIcon",
-					checked: false,
-					onClick: makeToggler("withHandles")
-				}, "enableDndHandlesNode");
+			// turn the cart TitlePane into a dnd Target
+			var cart = new Target("cartPaneNode", {
+				accept: [ "inStock" ],
+				parent: dom.byId("cartNode")
 			});
+
+			// update the cart’s displayed item count when dropped on
+			aspect.after(cart, "onDrop", setListCount);
+
+			// turn the wishlist TitlePane into a dnd Target
+			var wishlist = new Target("wishlistPaneNode", {
+				accept: [ "inStock", "outOfStock" ],
+				parent: dom.byId("wishlistNode")
+			});
+
+			// update the wishlist’s displayed item count when dropped on
+			aspect.after(wishlist, "onDrop", setListCount);
+
+			// highlight valid drop targets when a drag operation is started (/dnd/start)
+			topic.subscribe("/dnd/start", lang.partial(highlightTargets, true));
+
+			// remove the highlight when a drag operation is finished (/dnd/cancel or /dnd/drop)
+			topic.subscribe("/dnd/cancel, /dnd/drop", lang.partial(highlightTargets, false));
+
+			// give the target of a drop an extended glow
+			topic.subscribe("/dnd/drop", glowTarget);
+
+			// create a button to clear the cart
+			new Button({
+				onClick: dojo.hitch(cart, clearList)
+			}, "clearCartNode");
+
+			// create a button to clear the wishlist
+			new Button({
+				onClick: dojo.hitch(wishlist, clearList)
+			}, "clearWishlistNode");
+
+			// create a function that lets us change properties of the catalog lists;
+			// for demonstration purposes only
+			function makeToggler(prop){
+				return function(){
+					junkCatalog[prop] = foodCatalog[prop] = this.checked;
+				};
+			}
+
+			// create a demo button to toggle DnD on/off
+			new ToggleButton({
+				iconClass: "dijitCheckBoxIcon",
+				checked: true,
+				onClick: makeToggler("isSource")
+			}, "enableDndNode");
+
+			// create a demo button to toggle handles on/off
+			new ToggleButton({
+				iconClass: "dijitCheckBoxIcon",
+				checked: false,
+				onClick: makeToggler("withHandles")
+			}, "enableDndHandlesNode");
 		});
 	</script>
 </head>

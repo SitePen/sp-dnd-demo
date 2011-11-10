@@ -39,7 +39,7 @@
 				setListCount.call(this);
 			}
 
-			require([ "dnd/util", "dojo/aspect", "dojo/on", "dnd/data", "dojo/domReady!" ], function(util, aspect, on, data){
+			require([ "dnd/util", "dojo/aspect", "dojo/on", "dojo/topic", "dnd/data", "dojo/domReady!" ], function(util, aspect, on, topic, data){
 				// create dnd Sources for the junk and food catalogs
 				var junkCatalog = util.buildCatalog("junkCatalogNode", data.junkCatalogData, false),
 					foodCatalog = util.buildCatalog("foodCatalogNode", data.foodCatalogData, false);
@@ -72,13 +72,13 @@
 				aspect.after(wishlist, "onDrop", setListCount);
 
 				// highlight valid drop targets when a drag operation is started (/dnd/start)
-				on("/dnd/start", lang.partial(highlightTargets, true));
+				topic.subscribe("/dnd/start", lang.partial(highlightTargets, true));
 
 				// remove the highlight when a drag operation is finished (/dnd/cancel or /dnd/drop)
-				on("/dnd/cancel, /dnd/drop", lang.partial(highlightTargets, false));
+				topic.subscribe("/dnd/cancel, /dnd/drop", lang.partial(highlightTargets, false));
 
 				// give the target of a drop an extended glow
-				on("/dnd/drop", glowTarget);
+				topic.subscribe("/dnd/drop", glowTarget);
 
 				// create a button to clear the cart
 				new Button({

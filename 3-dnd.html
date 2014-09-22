@@ -4,18 +4,24 @@
 	<title>dojo.dnd :: Step 3</title>
 	<meta charset="utf-8">
 	<style>
-		@import url("http://downloads.dojotoolkit.org/release-1.7.0/dojo-release-1.7.0/dojo/resources/dojo.css");
-		@import url("http://downloads.dojotoolkit.org/release-1.7.0/dojo-release-1.7.0/dojo/resources/dnd.css");
-		@import url("http://downloads.dojotoolkit.org/release-1.7.0/dojo-release-1.7.0/dijit/themes/tundra/tundra.css");
+		@import url("//downloads.dojotoolkit.org/release-1.10.1/dojo-release-1.10.1/dojo/resources/dojo.css");
+		@import url("//downloads.dojotoolkit.org/release-1.10.1/dojo-release-1.10.1/dojo/resources/dnd.css");
+		@import url("//downloads.dojotoolkit.org/release-1.10.1/dojo-release-1.10.1/dijit/themes/tundra/tundra.css");
 		@import url("site-3.css");
 		@import url("dnd.css");
 	</style>
 	<!-- In the packages configuration below, we are setting the location of the dnd package to the directory in
 	     which this html file exists. -->
-	<script data-dojo-config="async: 1, packages: [ { name: 'dnd', location: location.pathname.replace(/\/[^/]+$/, '') } ]" src="http://downloads.dojotoolkit.org/release-1.7.0/dojo-release-1.7.0/dojo/dojo.js"></script>
+	<script>
+		var dojoConfig = {
+			async: 1,
+			packages: [ { name: 'dnd', location: location.pathname.replace(/[^/]+$/, '.') } ]
+		};
+	</script>
+	<script src="//downloads.dojotoolkit.org/release-1.10.1/dojo-release-1.10.1/dojo/dojo.js"></script>
 
 	<script>
-		require([ "dojo/_base/kernel", "dojo/dom", "dojo/query", "dojo/dnd/Target", "dijit/TitlePane", "dnd/util", "dnd/data", "dojo/domReady!" ], function(dojo, dom, query, Target, TitlePane, util, data){
+		require(["dojo/dom", "dojo/dnd/Target", "dijit/TitlePane", "dnd/util", "dnd/data", "dojo/domReady!" ], function(dom, Target, TitlePane, util, data){
 			// creates dnd Sources for the junk and food catalogs
 			var junkCatalog = util.buildCatalog("junkCatalogNode", data.junkCatalogData),
 				foodCatalog = util.buildCatalog("foodCatalogNode", data.foodCatalogData);

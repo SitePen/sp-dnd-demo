@@ -4,12 +4,12 @@
 	<title>dojo.dnd :: Step 2 (declarative)</title>
 	<meta charset="utf-8">
 	<style>
-		@import url("http://downloads.dojotoolkit.org/release-1.7.0/dojo-release-1.7.0/dojo/resources/dojo.css");
-		@import url("http://downloads.dojotoolkit.org/release-1.7.0/dojo-release-1.7.0/dojo/resources/dnd.css");
+		@import url("//downloads.dojotoolkit.org/release-1.10.1/dojo-release-1.10.1/dojo/resources/dojo.css");
+		@import url("//downloads.dojotoolkit.org/release-1.10.1/dojo-release-1.10.1/dojo/resources/dnd.css");
 		@import url("site-2.css");
 		@import url("dnd.css");
 	</style>
-	<script data-dojo-config="async: 1, parseOnLoad: 1, deps: [ 'dojo/dnd/Source', 'dojo/parser' ]" src="http://downloads.dojotoolkit.org/release-1.7.0/dojo-release-1.7.0/dojo/dojo.js"></script>
+	<script data-dojo-config="async: 1, parseOnLoad: 1, deps: [ 'dojo/dnd/Source', 'dojo/parser' ]" src="//downloads.dojotoolkit.org/release-1.10.1/dojo-release-1.10.1/dojo/dojo.js"></script>
 </head>
 <body id="demo2">
 	<h1>dojo.dnd :: Step 2 (declarative)</h1>
@@ -19,7 +19,7 @@
 	<div id="store">
 		<div class="catalogContainer">
 			<h2>Catalog</h2>
-			<ul data-dojo-type="dojo.dnd.Source" data-dojo-props="accept: [ 'inStock', 'outOfStock' ]" id="catalogNode" class="container">
+			<ul data-dojo-type="dojo/dnd/Source" data-dojo-props="accept: [ 'inStock', 'outOfStock' ]" id="catalogNode" class="container">
 				<li class="dojoDndItem inStock" dndType="inStock">Wrist watch</li>
 				<li class="dojoDndItem inStock" dndType="inStock">Life jacket</li>
 				<li class="dojoDndItem inStock" dndType="inStock">Toy bulldozer</li>
@@ -34,12 +34,12 @@
 
 		<div class="cartContainer">
 			<h2>Cart</h2>
-			<ol data-dojo-type="dojo.dnd.Source" data-dojo-props="accept: [ 'inStock' ]" id="cartNode" class="container">
+			<ol data-dojo-type="dojo/dnd/Source" data-dojo-props="accept: [ 'inStock' ]" id="cartNode" class="container">
 			</ol>
 		</div>
 		<div class="wishlistContainer">
 			<h2>Wishlist</h2>
-			<ol data-dojo-type="dojo.dnd.Source" data-dojo-props="accept: [ 'inStock', 'outOfStock' ]" id="wishlistNode" class="container">
+			<ol data-dojo-type="dojo/dnd/Source" data-dojo-props="accept: [ 'inStock', 'outOfStock' ]" id="wishlistNode" class="container">
 			</ol>
 		</div>
 

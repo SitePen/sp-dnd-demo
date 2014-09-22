@@ -4,17 +4,23 @@
 	<title>dojo.dnd :: Step 4</title>
 	<meta charset="utf-8">
 	<style>
-		@import url("http://downloads.dojotoolkit.org/release-1.7.0/dojo-release-1.7.0/dojo/resources/dojo.css");
-		@import url("http://downloads.dojotoolkit.org/release-1.7.0/dojo-release-1.7.0/dojo/resources/dnd.css");
-		@import url("http://downloads.dojotoolkit.org/release-1.7.0/dojo-release-1.7.0/dijit/themes/tundra/tundra.css");
+		@import url("//downloads.dojotoolkit.org/release-1.10.1/dojo-release-1.10.1/dojo/resources/dojo.css");
+		@import url("//downloads.dojotoolkit.org/release-1.10.1/dojo-release-1.10.1/dojo/resources/dnd.css");
+		@import url("//downloads.dojotoolkit.org/release-1.10.1/dojo-release-1.10.1/dijit/themes/tundra/tundra.css");
 		@import url("site-4.css");
 		@import url("dnd.css");
 	</style>
 	<!-- In the packages configuration below, we are setting the location of the dnd package to the directory in
 	     which this html file exists. -->
-	<script data-dojo-config="async: 1, packages: [ { name: 'dnd', location: location.pathname.replace(/\/[^/]+$/, '') } ]" src="http://downloads.dojotoolkit.org/release-1.7.0/dojo-release-1.7.0/dojo/dojo.js"></script>
 	<script>
-		require([ "dojo/_base/lang", "dojo/_base/array", "dojo/query", "dojo/dom", "dojo/dom-class", "dojo/dnd/Source", "dojo/dnd/Target", "dijit", "dijit/TitlePane", "dijit/form/Button", "dijit/form/ToggleButton", "dnd/util", "dojo/aspect", "dojo/on", "dojo/topic", "dnd/data", "dojo/domReady!" ], function(lang, arrayUtil, query, dom, domClass, Source, Target, dijit, TitlePane, Button, ToggleButton, util, aspect, on, topic, data){
+		var dojoConfig = {
+			async: 1,
+			packages: [ { name: 'dnd', location: location.pathname.replace(/[^/]+$/, '.') } ]
+		};
+	</script>
+	<script src="//downloads.dojotoolkit.org/release-1.10.1/dojo-release-1.10.1/dojo/dojo.js"></script>
+	<script>
+		require([ "dojo/_base/lang", "dojo/_base/array", "dojo/query", "dojo/dom", "dojo/dom-class", "dojo/dnd/Target", "dijit/TitlePane", "dijit/form/Button", "dijit/form/ToggleButton", "dnd/util", "dojo/aspect", "dojo/topic", "dnd/data", "dojo/domReady!" ], function(lang, arrayUtil, query, dom, domClass, Target, TitlePane, Button, ToggleButton, util, aspect, topic, data){
 			// highlights available drop targets
 			function highlightTargets(show, source, nodes){
 				domClass.toggle("wishlistPaneNode", "highlight", show);
@@ -83,12 +89,12 @@
 
 			// create a button to clear the cart
 			new Button({
-				onClick: dojo.hitch(cart, clearList)
+				onClick: lang.hitch(cart, clearList)
 			}, "clearCartNode");
 
 			// create a button to clear the wishlist
 			new Button({
-				onClick: dojo.hitch(wishlist, clearList)
+				onClick: lang.hitch(wishlist, clearList)
 			}, "clearWishlistNode");
 
 			// create a function that lets us change properties of the catalog lists;
